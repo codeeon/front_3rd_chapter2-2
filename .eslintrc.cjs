@@ -10,9 +10,18 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],
+    'no-unused-vars': ['error'],
+    'no-console': ['warn'],
+    eqeqeq: ['error', 'always'],
+    'prefer-const': ['error'],
+    'no-var': ['error'],
+    curly: ['error', 'all'],
+    'no-debugger': ['warn'],
+    'no-shadow': 'warn',
+    'no-magic-numbers': ['warn', { ignore: [0, 1] }],
+    'no-multi-spaces': ['warn'],
+    'space-before-function-paren': ['warn', 'never'],
+    'object-shorthand': ['warn', 'always'],
+    'no-trailing-spaces': ['warn'],
   },
-}
+};
