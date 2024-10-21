@@ -3,11 +3,11 @@ import { describe, expect, test } from 'vitest';
 import { act, fireEvent, render, renderHook, screen, within } from '@testing-library/react';
 import { CartPage } from '../../refactoring/components/cart-page';
 import { AdminPage } from '../../refactoring/components/admin-page';
-import { CartItem, Coupon, Product } from '../../types';
+import type { CartItemType, CouponType, ProductType } from '../../types';
 import { useCart, useCoupons, useProducts } from '../../refactoring/hooks';
 import * as cartUtils from '../../refactoring/hooks/utils/cart-utils';
 
-const mockProducts: Product[] = [
+const mockProducts: ProductType[] = [
   {
     id: 'p1',
     name: '상품1',
@@ -30,7 +30,8 @@ const mockProducts: Product[] = [
     discounts: [{ quantity: 10, rate: 0.2 }],
   },
 ];
-const mockCoupons: Coupon[] = [
+
+const mockCoupons: CouponType[] = [
   {
     name: '5000원 할인 쿠폰',
     code: 'AMOUNT5000',
@@ -46,20 +47,20 @@ const mockCoupons: Coupon[] = [
 ];
 
 const TestAdminPage = () => {
-  const [products, setProducts] = useState<Product[]>(mockProducts);
-  const [coupons, setCoupons] = useState<Coupon[]>(mockCoupons);
+  const [products, setProducts] = useState<ProductType[]>(mockProducts);
+  const [coupons, setCoupons] = useState<CouponType[]>(mockCoupons);
 
-  const handleProductUpdate = (updatedProduct: Product) => {
+  const handleProductUpdate = (updatedProduct: ProductType) => {
     setProducts((prevProducts) =>
       prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
     );
   };
 
-  const handleProductAdd = (newProduct: Product) => {
+  const handleProductAdd = (newProduct: ProductType) => {
     setProducts((prevProducts) => [...prevProducts, newProduct]);
   };
 
-  const handleCouponAdd = (newCoupon: Coupon) => {
+  const handleCouponAdd = (newCoupon: CouponType) => {
     setCoupons((prevCoupons) => [...prevCoupons, newCoupon]);
   };
 
@@ -231,7 +232,7 @@ describe('basic > ', () => {
   });
 
   describe('useProducts > ', () => {
-    const initialProducts: Product[] = [
+    const initialProducts: ProductType[] = [
       { id: '1', name: 'Product 1', price: 100, stock: 10, discounts: [] },
     ];
 
@@ -259,7 +260,7 @@ describe('basic > ', () => {
 
     test('새로운 제품을 추가할 수 있다.', () => {
       const { result } = renderHook(() => useProducts(initialProducts));
-      const newProduct: Product = {
+      const newProduct: ProductType = {
         id: '2',
         name: 'New Product',
         price: 200,
@@ -284,7 +285,7 @@ describe('basic > ', () => {
 
     test('쿠폰을 추가할 수 있다', () => {
       const { result } = renderHook(() => useCoupons(mockCoupons));
-      const newCoupon: Coupon = {
+      const newCoupon: CouponType = {
         name: 'New Coupon',
         code: 'NEWCODE',
         discountType: 'amount',
@@ -301,7 +302,7 @@ describe('basic > ', () => {
   });
 
   describe('cartUtils', () => {
-    const testProduct: Product = {
+    const testProduct: ProductType = {
       id: '1',
       name: 'Test Product',
       price: 100,
@@ -314,30 +315,30 @@ describe('basic > ', () => {
 
     describe('calculateItemTotal', () => {
       test('할인 없이 총액을 계산해야 합니다.', () => {
-        const item: CartItem = { product: testProduct, quantity: 1 };
+        const item: CartItemType = { product: testProduct, quantity: 1 };
         expect(cartUtils.calculateItemTotal(item)).toBe(100);
       });
 
       test('수량에 따라 올바른 할인을 적용해야 합니다.', () => {
-        const item: CartItem = { product: testProduct, quantity: 5 };
+        const item: CartItemType = { product: testProduct, quantity: 5 };
         expect(cartUtils.calculateItemTotal(item)).toBe(400); // 500 * 0.8
       });
     });
 
     describe('getMaxApplicableDiscount', () => {
       test('할인이 적용되지 않으면 0을 반환해야 합니다.', () => {
-        const item: CartItem = { product: testProduct, quantity: 1 };
+        const item: CartItemType = { product: testProduct, quantity: 1 };
         expect(cartUtils.getMaxApplicableDiscount(item)).toBe(0);
       });
 
       test('적용 가능한 가장 높은 할인율을 반환해야 합니다.', () => {
-        const item: CartItem = { product: testProduct, quantity: 5 };
+        const item: CartItemType = { product: testProduct, quantity: 5 };
         expect(cartUtils.getMaxApplicableDiscount(item)).toBe(0.2);
       });
     });
 
     describe('calculateCartTotal', () => {
-      const cart: CartItem[] = [
+      const cart: CartItemType[] = [
         { product: testProduct, quantity: 2 },
         { product: { ...testProduct, id: '2', price: 200 }, quantity: 1 },
       ];
@@ -350,7 +351,7 @@ describe('basic > ', () => {
       });
 
       test('금액쿠폰을 올바르게 적용해야 합니다.', () => {
-        const coupon: Coupon = {
+        const coupon: CouponType = {
           name: 'Test Coupon',
           code: 'TEST',
           discountType: 'amount',
@@ -362,7 +363,7 @@ describe('basic > ', () => {
       });
 
       test('퍼센트 쿠폰을 올바르게 적용해야 합니다', () => {
-        const coupon: Coupon = {
+        const coupon: CouponType = {
           name: 'Test Coupon',
           code: 'TEST',
           discountType: 'percentage',
@@ -375,7 +376,7 @@ describe('basic > ', () => {
     });
 
     describe('updateCartItemQuantity', () => {
-      const cart: CartItem[] = [
+      const cart: CartItemType[] = [
         { product: testProduct, quantity: 2 },
         { product: { ...testProduct, id: '2' }, quantity: 1 },
       ];
@@ -400,14 +401,14 @@ describe('basic > ', () => {
   });
 
   describe('useCart > ', () => {
-    const testProduct: Product = {
+    const testProduct: ProductType = {
       id: '1',
       name: 'Test Product',
       price: 100,
       stock: 10,
       discounts: [],
     };
-    const testCoupon: Coupon = {
+    const testCoupon: CouponType = {
       name: 'Test Coupon',
       code: 'TEST',
       discountType: 'percentage',

@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import { CartItem, Coupon, Product } from '../../types.ts';
+import type { CartItemType, CouponType, ProductType } from '../../types.ts';
 
 interface Props {
-  products: Product[];
-  coupons: Coupon[];
+  products: ProductType[];
+  coupons: CouponType[];
 }
 
 export const CartPage = ({ products, coupons }: Props) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
+  const [cart, setCart] = useState<CartItemType[]>([]);
+  const [selectedCoupon, setSelectedCoupon] = useState<CouponType | null>(null);
 
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: ProductType) => {
     const remainingStock = getRemainingStock(product);
     if (remainingStock <= 0) return;
 
@@ -41,7 +41,7 @@ export const CartPage = ({ products, coupons }: Props) => {
           return updatedQuantity > 0 ? { ...item, quantity: updatedQuantity } : null;
         }
         return item;
-      }).filter((item): item is CartItem => item !== null)
+      }).filter((item): item is CartItemType => item !== null)
     );
   };
 
@@ -85,14 +85,14 @@ export const CartPage = ({ products, coupons }: Props) => {
     return discounts.reduce((max, discount) => Math.max(max, discount.rate), 0);
   };
 
-  const getRemainingStock = (product: Product) => {
+  const getRemainingStock = (product: ProductType) => {
     const cartItem = cart.find(item => item.product.id === product.id);
     return product.stock - (cartItem?.quantity || 0);
   };
 
   const { totalBeforeDiscount, totalAfterDiscount, totalDiscount } = calculateTotal()
 
-  const getAppliedDiscount = (item: CartItem) => {
+  const getAppliedDiscount = (item: CartItemType) => {
     const { discounts } = item.product;
     const { quantity } = item;
     let appliedDiscount = 0;
@@ -104,7 +104,7 @@ export const CartPage = ({ products, coupons }: Props) => {
     return appliedDiscount;
   };
 
-  const applyCoupon = (coupon: Coupon) => {
+  const applyCoupon = (coupon: CouponType) => {
     setSelectedCoupon(coupon);
   };
 

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { CartPage } from './components/cart-page';
 import { AdminPage } from './components/admin-page';
-import { Coupon, Product } from '../types';
+import type { CouponType, ProductType } from '../types';
 import { useCoupons, useProducts } from './hooks';
 
-const initialProducts: Product[] = [
+const initialProducts: ProductType[] = [
   {
     id: 'p1',
     name: '상품1',
@@ -31,7 +31,7 @@ const initialProducts: Product[] = [
   },
 ];
 
-const initialCoupons: Coupon[] = [
+const initialCoupons: CouponType[] = [
   {
     name: '5000원 할인 쿠폰',
     code: 'AMOUNT5000',
