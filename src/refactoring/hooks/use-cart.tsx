@@ -12,7 +12,7 @@ export const useCart = () => {
   const [cart, setCart] = useState<CartItemType[]>([]);
   const [selectedCoupon, setSelectedCoupon] = useState<CouponType | null>(null);
 
-  // Cart에 의존하는 계산 로직 - useCart에서의 const로 선언된 함수들.
+  // cart에 의존하는 계산 로직 - useCart에서의 const로 선언된 함수들.
   const getRemainingStock = (product: ProductType) => {
     const cartItem = selectedCartItem(cart, product.id);
     return product.stock - (cartItem?.quantity || 0);

@@ -23,8 +23,6 @@ export const CartPage = ({ productList, couponList }: CartPageProps) => {
   } = useCart();
   const { totalBeforeDiscount, totalAfterDiscount, totalDiscount } = calculateTotal();
 
-  console.log(cart);
-
   return (
     <div className='container mx-auto p-4'>
       <h1 className='text-3xl font-bold mb-6'>장바구니</h1>
@@ -51,7 +49,6 @@ export const CartPage = ({ productList, couponList }: CartPageProps) => {
                 <CartItem
                   key={item.product.id}
                   item={item}
-                  cart={cart}
                   updateQuantity={updateQuantity}
                   removeFromCart={removeFromCart}
                 />

@@ -1,4 +1,5 @@
 import { ProductType } from '../../../types';
+import { getMaxDiscount } from '../../hooks/utils/cart-utils';
 
 export const CartProductItem = ({
   product,
@@ -9,10 +10,6 @@ export const CartProductItem = ({
   addToCart: (product: ProductType) => void;
   getRemainingStock: (product: ProductType) => number;
 }) => {
-  const getMaxDiscount = (discountList: { quantity: number; rate: number }[]) => {
-    return discountList.reduce((max, discount) => Math.max(max, discount.rate), 0);
-  };
-
   const remainingStock = getRemainingStock(product);
 
   return (

@@ -66,6 +66,10 @@ export const calculateCartTotal = (cart: CartItemType[], selectedCoupon: CouponT
   };
 };
 
+export const getMaxDiscount = (discountList: { quantity: number; rate: number }[]) => {
+  return discountList.reduce((max, discount) => Math.max(max, discount.rate), 0);
+};
+
 export const removeCartItem = (cart: CartItemType[], productId: string) => {
   return cart.filter((item) => item.product.id !== productId);
 };

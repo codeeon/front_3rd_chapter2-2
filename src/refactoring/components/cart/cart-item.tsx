@@ -1,31 +1,16 @@
 import { CartItemType } from '../../../types';
+import { getMaxApplicableDiscount } from '../../hooks/utils/cart-utils';
 
 export const CartItem = ({
   item,
-  cart,
   updateQuantity,
   removeFromCart,
 }: {
   item: CartItemType;
-  cart: CartItemType[];
   updateQuantity: (productId: string, newQuantity: number) => void;
-  removeFromCart: (productId: string, cart: CartItemType[]) => void;
+  removeFromCart: (productId: string) => void;
 }) => {
-  const getAppliedDiscount = (item: CartItemType) => {
-    const { discountList } = item.product;
-    const { quantity } = item;
-
-    let appliedDiscount = 0;
-
-    for (const discount of discountList) {
-      if (quantity >= discount.quantity) {
-        appliedDiscount = Math.max(appliedDiscount, discount.rate);
-      }
-    }
-    return appliedDiscount;
-  };
-
-  const appliedDiscount = getAppliedDiscount(item);
+  const appliedDiscount = getMaxApplicableDiscount(item);
 
   return (
     <div className='flex justify-between items-center bg-white p-3 rounded shadow'>
@@ -55,7 +40,7 @@ export const CartItem = ({
           +
         </button>
         <button
-          onClick={() => removeFromCart(item.product.id, cart)}
+          onClick={() => removeFromCart(item.product.id)}
           className='bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600'
         >
           삭제
