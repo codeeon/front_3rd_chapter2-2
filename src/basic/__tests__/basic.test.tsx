@@ -13,21 +13,21 @@ const mockProductList: ProductType[] = [
     name: '상품1',
     price: 10000,
     stock: 20,
-    discounts: [{ quantity: 10, rate: 0.1 }],
+    discountList: [{ quantity: 10, rate: 0.1 }],
   },
   {
     id: 'p2',
     name: '상품2',
     price: 20000,
     stock: 20,
-    discounts: [{ quantity: 10, rate: 0.15 }],
+    discountList: [{ quantity: 10, rate: 0.15 }],
   },
   {
     id: 'p3',
     name: '상품3',
     price: 30000,
     stock: 20,
-    discounts: [{ quantity: 10, rate: 0.2 }],
+    discountList: [{ quantity: 10, rate: 0.2 }],
   },
 ];
 
@@ -233,7 +233,7 @@ describe('basic > ', () => {
 
   describe('useProductList > ', () => {
     const initialProductList: ProductType[] = [
-      { id: '1', name: 'Product 1', price: 100, stock: 10, discounts: [] },
+      { id: '1', name: 'Product 1', price: 100, stock: 10, discountList: [] },
     ];
 
     test('특정 제품으로 초기화할 수 있다.', () => {
@@ -250,7 +250,7 @@ describe('basic > ', () => {
       });
 
       expect(result.current.productList[0]).toEqual({
-        discounts: [],
+        discountList: [],
         id: '1',
         name: 'Updated Product',
         price: 100,
@@ -265,7 +265,7 @@ describe('basic > ', () => {
         name: 'New Product',
         price: 200,
         stock: 5,
-        discounts: [],
+        discountList: [],
       };
 
       act(() => {
@@ -307,7 +307,7 @@ describe('basic > ', () => {
       name: 'Test Product',
       price: 100,
       stock: 10,
-      discounts: [
+      discountList: [
         { quantity: 2, rate: 0.1 },
         { quantity: 5, rate: 0.2 },
       ],
@@ -409,7 +409,7 @@ describe('basic > ', () => {
       name: 'Test Product',
       price: 100,
       stock: 10,
-      discounts: [],
+      discountList: [],
     };
     const testCoupon: CouponType = {
       name: 'Test Coupon',

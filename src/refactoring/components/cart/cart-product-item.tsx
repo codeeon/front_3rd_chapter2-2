@@ -9,8 +9,8 @@ export const CartProductItem = ({
   addToCart: (product: ProductType) => void;
   getRemainingStock: (product: ProductType) => number;
 }) => {
-  const getMaxDiscount = (discounts: { quantity: number; rate: number }[]) => {
-    return discounts.reduce((max, discount) => Math.max(max, discount.rate), 0);
+  const getMaxDiscount = (discountList: { quantity: number; rate: number }[]) => {
+    return discountList.reduce((max, discount) => Math.max(max, discount.rate), 0);
   };
 
   const remainingStock = getRemainingStock(product);
@@ -25,15 +25,15 @@ export const CartProductItem = ({
         <span className={`font-medium ${remainingStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
           재고: {remainingStock}개
         </span>
-        {product.discounts.length > 0 && (
+        {product.discountList.length > 0 && (
           <span className='ml-2 font-medium text-blue-600'>
-            최대 {(getMaxDiscount(product.discounts) * 100).toFixed(0)}% 할인
+            최대 {(getMaxDiscount(product.discountList) * 100).toFixed(0)}% 할인
           </span>
         )}
       </div>
-      {product.discounts.length > 0 && (
+      {product.discountList.length > 0 && (
         <ul className='list-disc list-inside text-sm text-gray-500 mb-2'>
-          {product.discounts.map((discount, index) => (
+          {product.discountList.map((discount, index) => (
             <li key={index}>
               {discount.quantity}개 이상: {(discount.rate * 100).toFixed(0)}% 할인
             </li>

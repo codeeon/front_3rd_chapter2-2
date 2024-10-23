@@ -12,12 +12,12 @@ export const CartItem = ({
   removeFromCart: (productId: string, cart: CartItemType[]) => void;
 }) => {
   const getAppliedDiscount = (item: CartItemType) => {
-    const { discounts } = item.product;
+    const { discountList } = item.product;
     const { quantity } = item;
 
     let appliedDiscount = 0;
 
-    for (const discount of discounts) {
+    for (const discount of discountList) {
       if (quantity >= discount.quantity) {
         appliedDiscount = Math.max(appliedDiscount, discount.rate);
       }
