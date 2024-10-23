@@ -4,10 +4,10 @@ import { act, fireEvent, render, renderHook, screen, within } from '@testing-lib
 import { CartPage } from '../../refactoring/components/cart/cart-page';
 import { AdminPage } from '../../refactoring/components/admin/admin-page';
 import type { CartItemType, CouponType, ProductType } from '../../types';
-import { useCart, useCoupons, useProducts } from '../../refactoring/hooks';
+import { useCart, useCouponList, useProductList } from '../../refactoring/hooks';
 import * as cartUtils from '../../refactoring/hooks/utils/cart-utils';
 
-const mockProducts: ProductType[] = [
+const mockProductList: ProductType[] = [
   {
     id: 'p1',
     name: '상품1',
@@ -31,7 +31,7 @@ const mockProducts: ProductType[] = [
   },
 ];
 
-const mockCoupons: CouponType[] = [
+const mockCouponList: CouponType[] = [
   {
     name: '5000원 할인 쿠폰',
     code: 'AMOUNT5000',
@@ -47,27 +47,27 @@ const mockCoupons: CouponType[] = [
 ];
 
 const TestAdminPage = () => {
-  const [products, setProducts] = useState<ProductType[]>(mockProducts);
-  const [coupons, setCoupons] = useState<CouponType[]>(mockCoupons);
+  const [productList, setProductList] = useState<ProductType[]>(mockProductList);
+  const [couponList, setCouponList] = useState<CouponType[]>(mockCouponList);
 
   const handleProductUpdate = (updatedProduct: ProductType) => {
-    setProducts((prevProducts) =>
-      prevProducts.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    setProductList((prevProductList) =>
+      prevProductList.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
     );
   };
 
   const handleProductAdd = (newProduct: ProductType) => {
-    setProducts((prevProducts) => [...prevProducts, newProduct]);
+    setProductList((prevProductList) => [...prevProductList, newProduct]);
   };
 
   const handleCouponAdd = (newCoupon: CouponType) => {
-    setCoupons((prevCoupons) => [...prevCoupons, newCoupon]);
+    setCouponList((prevCouponList) => [...prevCouponList, newCoupon]);
   };
 
   return (
     <AdminPage
-      products={products}
-      coupons={coupons}
+      productList={productList}
+      couponList={couponList}
       onProductUpdate={handleProductUpdate}
       onProductAdd={handleProductAdd}
       onCouponAdd={handleCouponAdd}
@@ -78,7 +78,7 @@ const TestAdminPage = () => {
 describe('basic > ', () => {
   describe('시나리오 테스트 > ', () => {
     test('장바구니 페이지 테스트 > ', async () => {
-      render(<CartPage products={mockProducts} coupons={mockCoupons} />);
+      render(<CartPage productList={mockProductList} couponList={mockCouponList} />);
       const product1 = screen.getByTestId('product-p1');
       const product2 = screen.getByTestId('product-p2');
       const product3 = screen.getByTestId('product-p3');
@@ -231,25 +231,25 @@ describe('basic > ', () => {
     });
   });
 
-  describe('useProducts > ', () => {
-    const initialProducts: ProductType[] = [
+  describe('useProductList > ', () => {
+    const initialProductList: ProductType[] = [
       { id: '1', name: 'Product 1', price: 100, stock: 10, discounts: [] },
     ];
 
     test('특정 제품으로 초기화할 수 있다.', () => {
-      const { result } = renderHook(() => useProducts(initialProducts));
-      expect(result.current.products).toEqual(initialProducts);
+      const { result } = renderHook(() => useProductList(initialProductList));
+      expect(result.current.productList).toEqual(initialProductList);
     });
 
     test('제품을 업데이트할 수 있다.', () => {
-      const { result } = renderHook(() => useProducts(initialProducts));
-      const updatedProduct = { ...initialProducts[0], name: 'Updated Product' };
+      const { result } = renderHook(() => useProductList(initialProductList));
+      const updatedProduct = { ...initialProductList[0], name: 'Updated Product' };
 
       act(() => {
         result.current.updateProduct(updatedProduct);
       });
 
-      expect(result.current.products[0]).toEqual({
+      expect(result.current.productList[0]).toEqual({
         discounts: [],
         id: '1',
         name: 'Updated Product',
@@ -259,7 +259,7 @@ describe('basic > ', () => {
     });
 
     test('새로운 제품을 추가할 수 있다.', () => {
-      const { result } = renderHook(() => useProducts(initialProducts));
+      const { result } = renderHook(() => useProductList(initialProductList));
       const newProduct: ProductType = {
         id: '2',
         name: 'New Product',
@@ -272,19 +272,19 @@ describe('basic > ', () => {
         result.current.addProduct(newProduct);
       });
 
-      expect(result.current.products).toHaveLength(2);
-      expect(result.current.products[1]).toEqual(newProduct);
+      expect(result.current.productList).toHaveLength(2);
+      expect(result.current.productList[1]).toEqual(newProduct);
     });
   });
 
-  describe('useCoupons > ', () => {
+  describe('useCouponList > ', () => {
     test('쿠폰을 초기화할 수 있다.', () => {
-      const { result } = renderHook(() => useCoupons(mockCoupons));
-      expect(result.current.coupons).toEqual(mockCoupons);
+      const { result } = renderHook(() => useCouponList(mockCouponList));
+      expect(result.current.couponList).toEqual(mockCouponList);
     });
 
     test('쿠폰을 추가할 수 있다', () => {
-      const { result } = renderHook(() => useCoupons(mockCoupons));
+      const { result } = renderHook(() => useCouponList(mockCouponList));
       const newCoupon: CouponType = {
         name: 'New Coupon',
         code: 'NEWCODE',
@@ -296,8 +296,8 @@ describe('basic > ', () => {
         result.current.addCoupon(newCoupon);
       });
 
-      expect(result.current.coupons).toHaveLength(3);
-      expect(result.current.coupons[2]).toEqual(newCoupon);
+      expect(result.current.couponList).toHaveLength(3);
+      expect(result.current.couponList[2]).toEqual(newCoupon);
     });
   });
 
@@ -380,9 +380,12 @@ describe('basic > ', () => {
         { product: testProduct, quantity: 2 },
         { product: { ...testProduct, id: '2' }, quantity: 1 },
       ];
+      console.log('cart -> ', cart);
+      console.log('--------------------------------');
 
       test('수량을 올바르게 업데이트해야 합니다', () => {
         const updatedCart = cartUtils.updateCartItemQuantity(cart, '1', 5);
+        console.log('updatedCart -> ', updatedCart);
         expect(updatedCart[0].quantity).toBe(5);
         expect(updatedCart[1].quantity).toBe(1);
       });
