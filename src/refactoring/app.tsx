@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CartPage } from './components/cart/cart-page';
 import { AdminPage } from './components/admin/admin-page';
 import type { CouponType, ProductType } from '../types';
-import { useCouponList, useProductList } from './hooks';
+import { useCouponList, useProductList } from './hooks/cart';
 
 const initialProductList: ProductType[] = [
   {

@@ -1,4 +1,4 @@
-import type { CouponType } from '../../types';
+import type { CouponType } from '../../../types';
 import { useState } from 'react';
 
 const mockCouponList: CouponType[] = [

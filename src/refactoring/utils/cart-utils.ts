@@ -1,4 +1,4 @@
-import type { CartItemType, CouponType } from '../../../types';
+import type { CartItemType, CouponType } from '../../types';
 
 // params만 맞으면, 범용적으로 사용 가능한 계산식
 // export 함수들은 모두 외부에서도 사용 중.

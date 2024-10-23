@@ -1,5 +1,5 @@
 import { CartItemType } from '../../../types';
-import { getMaxApplicableDiscount } from '../../hooks/utils/cart-utils';
+import { getMaxApplicableDiscount } from '../../utils/cart-utils';
 
 export const CartItem = ({
   item,

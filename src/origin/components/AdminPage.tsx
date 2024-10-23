@@ -30,7 +30,7 @@ export const AdminPage = ({
     name: '',
     price: 0,
     stock: 0,
-    discounts: [],
+    discountList: [],
   });
 
   const toggleProductAccordion = (productId: string) => {
@@ -88,7 +88,7 @@ export const AdminPage = ({
     if (updatedProduct && editingProduct) {
       const newProduct = {
         ...updatedProduct,
-        discounts: [...updatedProduct.discounts, newDiscount],
+        discountList: [...updatedProduct.discountList, newDiscount],
       };
       onProductUpdate(newProduct);
       setEditingProduct(newProduct);
@@ -101,7 +101,7 @@ export const AdminPage = ({
     if (updatedProduct) {
       const newProduct = {
         ...updatedProduct,
-        discounts: updatedProduct.discounts.filter((_, i) => i !== index),
+        discountList: updatedProduct.discountList.filter((_, i) => i !== index),
       };
       onProductUpdate(newProduct);
       setEditingProduct(newProduct);
@@ -125,7 +125,7 @@ export const AdminPage = ({
       name: '',
       price: 0,
       stock: 0,
-      discounts: [],
+      discountList: [],
     });
     setShowNewProductForm(false);
   };
@@ -245,7 +245,7 @@ export const AdminPage = ({
                         {/* 할인 정보 수정 부분 */}
                         <div>
                           <h4 className='text-lg font-semibold mb-2'>할인 정보</h4>
-                          {editingProduct.discounts.map((discount, index) => (
+                          {editingProduct.discountList.map((discount, index) => (
                             <div key={index} className='flex justify-between items-center mb-2'>
                               <span>
                                 {discount.quantity}개 이상 구매 시 {discount.rate * 100}% 할인
@@ -300,7 +300,7 @@ export const AdminPage = ({
                       </div>
                     ) : (
                       <div>
-                        {product.discounts.map((discount, index) => (
+                        {product.discountList.map((discount, index) => (
                           <div key={index} className='mb-2'>
                             <span>
                               {discount.quantity}개 이상 구매 시 {discount.rate * 100}% 할인

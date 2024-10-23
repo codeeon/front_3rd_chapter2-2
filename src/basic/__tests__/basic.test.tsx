@@ -4,8 +4,8 @@ import { act, fireEvent, render, renderHook, screen, within } from '@testing-lib
 import { CartPage } from '../../refactoring/components/cart/cart-page';
 import { AdminPage } from '../../refactoring/components/admin/admin-page';
 import type { CartItemType, CouponType, ProductType } from '../../types';
-import { useCart, useCouponList, useProductList } from '../../refactoring/hooks';
-import * as cartUtils from '../../refactoring/hooks/utils/cart-utils';
+import { useCart, useCouponList, useProductList } from '../../refactoring/hooks/cart';
+import * as cartUtils from '../../refactoring/utils/cart-utils';
 
 const mockProductList: ProductType[] = [
   {
