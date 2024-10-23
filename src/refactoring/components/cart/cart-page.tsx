@@ -1,19 +1,29 @@
 import type { CouponType, ProductType } from '../../../types.ts';
-import { useCart } from '../../hooks/index.ts';
+import { useCart } from '../../hooks';
 import { CartItem } from './cart-item.tsx';
 import { CartProductItem } from './cart-product-item.tsx';
 import { Coupon } from './coupon.tsx';
 import { OrderSummary } from './order-summary.tsx';
 
 interface CartPageProps {
-  products: ProductType[];
-  coupons: CouponType[];
+  productList: ProductType[];
+  couponList: CouponType[];
 }
 
-export const CartPage = ({ products, coupons }: CartPageProps) => {
-  const { cart, calculateTotal, applyCoupon, selectedCoupon } = useCart();
-
+export const CartPage = ({ productList, couponList }: CartPageProps) => {
+  const {
+    cart,
+    calculateTotal,
+    applyCoupon,
+    selectedCoupon,
+    updateQuantity,
+    removeFromCart,
+    addToCart,
+    getRemainingStock,
+  } = useCart();
   const { totalBeforeDiscount, totalAfterDiscount, totalDiscount } = calculateTotal();
+
+  console.log(cart);
 
   return (
     <div className='container mx-auto p-4'>
@@ -22,19 +32,37 @@ export const CartPage = ({ products, coupons }: CartPageProps) => {
         <div>
           <h2 className='text-2xl font-semibold mb-4'>상품 목록</h2>
           <div className='space-y-2'>
-            {products.map((product) => (
-              <CartProductItem key={product.id} product={product} />
+            {productList.map((product) => (
+              <CartProductItem
+                key={product.id}
+                product={product}
+                addToCart={addToCart}
+                getRemainingStock={getRemainingStock}
+              />
             ))}
           </div>
         </div>
         <div>
           <h2 className='text-2xl font-semibold mb-4'>장바구니 내역</h2>
           <div className='space-y-2'>
-            {cart.map((item) => (
-              <CartItem key={item.product.id} item={item} />
-            ))}
+            {cart.map((item) => {
+              console.log('cart item -> ', item);
+              return (
+                <CartItem
+                  key={item.product.id}
+                  item={item}
+                  cart={cart}
+                  updateQuantity={updateQuantity}
+                  removeFromCart={removeFromCart}
+                />
+              );
+            })}
           </div>
-          <Coupon coupons={coupons} applyCoupon={applyCoupon} selectedCoupon={selectedCoupon} />
+          <Coupon
+            couponList={couponList}
+            applyCoupon={applyCoupon}
+            selectedCoupon={selectedCoupon}
+          />
           <OrderSummary
             totalBeforeDiscount={totalBeforeDiscount}
             totalAfterDiscount={totalAfterDiscount}

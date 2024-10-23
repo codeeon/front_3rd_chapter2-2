@@ -1,16 +1,16 @@
 import { ProductType } from '../../../types';
-import { useCart } from '../../hooks';
 
-export const CartProductItem = ({ product }: { product: ProductType }) => {
-  const { cart, addToCart } = useCart();
-
+export const CartProductItem = ({
+  product,
+  addToCart,
+  getRemainingStock,
+}: {
+  product: ProductType;
+  addToCart: (product: ProductType) => void;
+  getRemainingStock: (product: ProductType) => number;
+}) => {
   const getMaxDiscount = (discounts: { quantity: number; rate: number }[]) => {
     return discounts.reduce((max, discount) => Math.max(max, discount.rate), 0);
-  };
-
-  const getRemainingStock = (product: ProductType) => {
-    const cartItem = cart.find((item) => item.product.id === product.id);
-    return product.stock - (cartItem?.quantity || 0);
   };
 
   const remainingStock = getRemainingStock(product);

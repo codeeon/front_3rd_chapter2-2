@@ -1,9 +1,16 @@
 import { CartItemType } from '../../../types';
-import { useCart } from '../../hooks';
 
-export const CartItem = ({ item }: { item: CartItemType }) => {
-  const { removeFromCart, updateQuantity } = useCart();
-
+export const CartItem = ({
+  item,
+  cart,
+  updateQuantity,
+  removeFromCart,
+}: {
+  item: CartItemType;
+  cart: CartItemType[];
+  updateQuantity: (productId: string, newQuantity: number) => void;
+  removeFromCart: (productId: string, cart: CartItemType[]) => void;
+}) => {
   const getAppliedDiscount = (item: CartItemType) => {
     const { discounts } = item.product;
     const { quantity } = item;
@@ -48,7 +55,7 @@ export const CartItem = ({ item }: { item: CartItemType }) => {
           +
         </button>
         <button
-          onClick={() => removeFromCart(item.product.id)}
+          onClick={() => removeFromCart(item.product.id, cart)}
           className='bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600'
         >
           삭제

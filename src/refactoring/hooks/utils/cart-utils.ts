@@ -1,18 +1,54 @@
 import type { CartItemType, CouponType } from '../../../types';
 
 export const calculateItemTotal = (item: CartItemType) => {
-  return 0;
+  const { product, quantity } = item;
+
+  const total = product.price * quantity;
+  const discount = getMaxApplicableDiscount(item);
+
+  return total * (1 - discount);
 };
 
 export const getMaxApplicableDiscount = (item: CartItemType) => {
-  return 0;
+  const { discounts } = item.product;
+  const { quantity } = item;
+
+  let appliedDiscount = 0;
+
+  Object.entries(discounts).forEach(([_, value]) => {
+    if (quantity >= value.quantity) {
+      appliedDiscount = Math.max(appliedDiscount, value.rate);
+    }
+  });
+
+  return appliedDiscount;
 };
 
+export const calculateTotalBeforeDiscount = (cart: CartItemType[]) =>
+  cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+
 export const calculateCartTotal = (cart: CartItemType[], selectedCoupon: CouponType | null) => {
+  const totalBeforeDiscount = calculateTotalBeforeDiscount(cart);
+
+  let totalAfterDiscount = cart.reduce((acc, item) => acc + calculateItemTotal(item), 0);
+
+  if (selectedCoupon) {
+    switch (selectedCoupon?.discountType) {
+      case 'amount':
+        totalAfterDiscount -= selectedCoupon.discountValue;
+        break;
+      case 'percentage':
+        totalAfterDiscount *= 1 - selectedCoupon.discountValue / 100;
+        break;
+    }
+  }
+
+  const totalDiscount = totalBeforeDiscount - totalAfterDiscount;
+
   return {
-    totalBeforeDiscount: 0,
-    totalAfterDiscount: 0,
-    totalDiscount: 0,
+    totalBeforeDiscount,
+    totalAfterDiscount,
+    totalDiscount,
   };
 };
 
@@ -21,5 +57,18 @@ export const updateCartItemQuantity = (
   productId: string,
   newQuantity: number
 ): CartItemType[] => {
-  return [];
+  if (newQuantity <= 0) {
+    return cart.filter((item) => item.product.id !== productId);
+  }
+
+  return [
+    {
+      product: cart.find((item) => item.product.id === productId)!.product,
+      quantity: Math.min(
+        newQuantity,
+        cart.find((item) => item.product.id === productId)!.product.stock
+      ),
+    },
+    ...cart.filter((item) => item.product.id !== productId),
+  ];
 };
