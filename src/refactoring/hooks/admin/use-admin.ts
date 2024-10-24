@@ -1,34 +1,28 @@
 import { useState } from 'react';
 import { CouponType, DiscountType, ProductType } from '../../../types';
+import { createNewProduct, findProductById } from '../../utils/admin-utils';
 
-const findProductById = (
-  productId: string,
-  productList: ProductType[]
-): ProductType | undefined => {
-  return productList.find((p) => p.id === productId);
+const INITIAL_NEW_PRODUCT = {
+  name: '',
+  price: 0,
+  stock: 0,
+  discountList: [],
 };
-
-const createNewProduct = (newProduct: Omit<ProductType, 'id'>): ProductType => {
-  return { ...newProduct, id: Date.now().toString() };
+const INITIAL_NEW_DISCOUNT = { quantity: 0, rate: 0 };
+const INITIAL_NEW_COUPON = {
+  name: '',
+  code: '',
+  discountType: 'percentage' as CouponType['discountType'],
+  discountValue: 0,
 };
 
 export const useAdmin = () => {
   const [openProductIdList, setOpenProductIdList] = useState<Set<string>>(new Set());
   const [editingProduct, setEditingProduct] = useState<ProductType | null>(null);
-  const [newDiscount, setNewDiscount] = useState<DiscountType>({ quantity: 0, rate: 0 });
-  const [newCoupon, setNewCoupon] = useState<CouponType>({
-    name: '',
-    code: '',
-    discountType: 'percentage',
-    discountValue: 0,
-  });
+  const [newDiscount, setNewDiscount] = useState<DiscountType>(INITIAL_NEW_DISCOUNT);
+  const [newCoupon, setNewCoupon] = useState<CouponType>(INITIAL_NEW_COUPON);
   const [showNewProductForm, setShowNewProductForm] = useState(false);
-  const [newProduct, setNewProduct] = useState<Omit<ProductType, 'id'>>({
-    name: '',
-    price: 0,
-    stock: 0,
-    discountList: [],
-  });
+  const [newProduct, setNewProduct] = useState<Omit<ProductType, 'id'>>(INITIAL_NEW_PRODUCT);
 
   const toggleProductAccordion = (productId: string) => {
     setOpenProductIdList((prev) => {
@@ -86,7 +80,7 @@ export const useAdmin = () => {
     productList: ProductType[],
     onProductUpdate: (product: ProductType) => void
   ) {
-    const updatedProduct = productList.find((p) => p.id === productId);
+    const updatedProduct = findProductById(productId, productList);
     if (updatedProduct && editingProduct) {
       const newProduct = {
         ...updatedProduct,
@@ -94,7 +88,7 @@ export const useAdmin = () => {
       };
       onProductUpdate(newProduct);
       setEditingProduct(newProduct);
-      setNewDiscount({ quantity: 0, rate: 0 });
+      setNewDiscount(INITIAL_NEW_DISCOUNT);
     }
   }
 
@@ -104,7 +98,7 @@ export const useAdmin = () => {
     productList: ProductType[],
     onProductUpdate: (product: ProductType) => void
   ) {
-    const updatedProduct = productList.find((p) => p.id === productId);
+    const updatedProduct = findProductById(productId, productList);
     if (updatedProduct) {
       const newProduct = {
         ...updatedProduct,
@@ -117,12 +111,7 @@ export const useAdmin = () => {
 
   function handleAddCoupon(onCouponAdd: (coupon: CouponType) => void, newCoupon: CouponType) {
     onCouponAdd(newCoupon);
-    setNewCoupon({
-      name: '',
-      code: '',
-      discountType: 'percentage',
-      discountValue: 0,
-    });
+    setNewCoupon(INITIAL_NEW_COUPON);
   }
 
   function handleAddNewProduct(
@@ -131,12 +120,7 @@ export const useAdmin = () => {
   ) {
     const productWithId = createNewProduct(newProduct);
     onProductAdd(productWithId);
-    setNewProduct({
-      name: '',
-      price: 0,
-      stock: 0,
-      discountList: [],
-    });
+    setNewProduct(INITIAL_NEW_PRODUCT);
     setShowNewProductForm(false);
   }
 
