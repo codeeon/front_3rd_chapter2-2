@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import { CouponType, DiscountType, ProductType } from '../../../types';
 
+const findProductById = (
+  productId: string,
+  productList: ProductType[]
+): ProductType | undefined => {
+  return productList.find((p) => p.id === productId);
+};
+
+const createNewProduct = (newProduct: Omit<ProductType, 'id'>): ProductType => {
+  return { ...newProduct, id: Date.now().toString() };
+};
+
 export const useAdmin = () => {
   const [openProductIdList, setOpenProductIdList] = useState<Set<string>>(new Set());
   const [editingProduct, setEditingProduct] = useState<ProductType | null>(null);
@@ -31,51 +42,50 @@ export const useAdmin = () => {
     });
   };
 
-  const handleEditProduct = (product: ProductType) => {
+  function handleEditProduct(product: ProductType) {
     setEditingProduct({ ...product });
-  };
+  }
 
-  const handleProductNameUpdate = (productId: string, newName: string) => {
+  function handleProductNameUpdate(productId: string, newName: string) {
     if (editingProduct && editingProduct.id === productId) {
       const updatedProduct = { ...editingProduct, name: newName };
       setEditingProduct(updatedProduct);
     }
-  };
+  }
 
-  // 새로운 핸들러 함수 추가
-  const handlePriceUpdate = (productId: string, newPrice: number) => {
+  function handlePriceUpdate(productId: string, newPrice: number) {
     if (editingProduct && editingProduct.id === productId) {
       const updatedProduct = { ...editingProduct, price: newPrice };
       setEditingProduct(updatedProduct);
     }
-  };
+  }
 
-  const handleEditComplete = (onProductUpdate: (product: ProductType) => void) => {
+  function handleEditComplete(onProductUpdate: (product: ProductType) => void) {
     if (editingProduct) {
       onProductUpdate(editingProduct);
       setEditingProduct(null);
     }
-  };
+  }
 
-  const handleStockUpdate = (
+  function handleStockUpdate(
     productId: string,
     newStock: number,
     productList: ProductType[],
     onProductUpdate: (product: ProductType) => void
-  ) => {
-    const updatedProduct = productList.find((p) => p.id === productId);
+  ) {
+    const updatedProduct = findProductById(productId, productList);
     if (updatedProduct) {
       const newProduct = { ...updatedProduct, stock: newStock };
       onProductUpdate(newProduct);
       setEditingProduct(newProduct);
     }
-  };
+  }
 
-  const handleAddDiscount = (
+  function handleAddDiscount(
     productId: string,
     productList: ProductType[],
     onProductUpdate: (product: ProductType) => void
-  ) => {
+  ) {
     const updatedProduct = productList.find((p) => p.id === productId);
     if (updatedProduct && editingProduct) {
       const newProduct = {
@@ -86,14 +96,14 @@ export const useAdmin = () => {
       setEditingProduct(newProduct);
       setNewDiscount({ quantity: 0, rate: 0 });
     }
-  };
+  }
 
-  const handleRemoveDiscount = (
+  function handleRemoveDiscount(
     productId: string,
     index: number,
     productList: ProductType[],
     onProductUpdate: (product: ProductType) => void
-  ) => {
+  ) {
     const updatedProduct = productList.find((p) => p.id === productId);
     if (updatedProduct) {
       const newProduct = {
@@ -103,9 +113,9 @@ export const useAdmin = () => {
       onProductUpdate(newProduct);
       setEditingProduct(newProduct);
     }
-  };
+  }
 
-  const handleAddCoupon = (onCouponAdd: (coupon: CouponType) => void, newCoupon: CouponType) => {
+  function handleAddCoupon(onCouponAdd: (coupon: CouponType) => void, newCoupon: CouponType) {
     onCouponAdd(newCoupon);
     setNewCoupon({
       name: '',
@@ -113,13 +123,13 @@ export const useAdmin = () => {
       discountType: 'percentage',
       discountValue: 0,
     });
-  };
+  }
 
-  const handleAddNewProduct = (
+  function handleAddNewProduct(
     newProduct: Omit<ProductType, 'id'>,
     onProductAdd: (product: ProductType) => void
-  ) => {
-    const productWithId = { ...newProduct, id: Date.now().toString() };
+  ) {
+    const productWithId = createNewProduct(newProduct);
     onProductAdd(productWithId);
     setNewProduct({
       name: '',
@@ -128,11 +138,11 @@ export const useAdmin = () => {
       discountList: [],
     });
     setShowNewProductForm(false);
-  };
+  }
 
-  const handleShowNewProductForm = () => {
+  function handleShowNewProductForm() {
     setShowNewProductForm((prevState) => !prevState);
-  };
+  }
 
   return {
     openProductIdList,
