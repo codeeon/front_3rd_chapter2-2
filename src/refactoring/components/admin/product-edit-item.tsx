@@ -1,4 +1,4 @@
-import { ProductType } from '../../../types';
+import { DiscountType, ProductType } from '../../../types';
 import { DiscountForm } from './discount-form';
 import { DiscountItem } from './discount-item';
 
@@ -8,43 +8,46 @@ export const ProductEditForm = ({
   productList,
   editingProduct,
   setEditingProduct,
+  handleProductNameUpdate,
+  handlePriceUpdate,
+  handleStockUpdate,
+  handleEditComplete,
+  handleAddDiscount,
+  handleRemoveDiscount,
+  newDiscount,
+  setNewDiscount,
 }: {
   product: ProductType;
   onProductUpdate: (updatedProduct: ProductType) => void;
   productList: ProductType[];
   editingProduct: ProductType | null;
   setEditingProduct: (product: ProductType | null) => void;
+  handleProductNameUpdate: (productId: string, name: string) => void;
+  handlePriceUpdate: (productId: string, price: number) => void;
+  handleStockUpdate: (
+    productId: string,
+    stock: number,
+    productList: ProductType[],
+    onProductUpdate: (updatedProduct: ProductType) => void
+  ) => void;
+  handleEditComplete: (
+    onProductUpdate: (updatedProduct: ProductType) => void,
+    editingProduct: ProductType | null
+  ) => void;
+  handleRemoveDiscount: (
+    productId: string,
+    index: number,
+    productList: ProductType[],
+    onProductUpdate: (product: ProductType) => void
+  ) => void;
+  handleAddDiscount: (
+    productId: string,
+    productList: ProductType[],
+    onProductUpdate: (product: ProductType) => void
+  ) => void;
+  newDiscount: DiscountType;
+  setNewDiscount: (discount: DiscountType) => void;
 }) => {
-  const handleProductNameUpdate = (productId: string, newName: string) => {
-    if (editingProduct && editingProduct.id === productId) {
-      const updatedProduct = { ...editingProduct, name: newName };
-      setEditingProduct(updatedProduct);
-    }
-  };
-
-  const handlePriceUpdate = (productId: string, newPrice: number) => {
-    if (editingProduct && editingProduct.id === productId) {
-      const updatedProduct = { ...editingProduct, price: newPrice };
-      setEditingProduct(updatedProduct);
-    }
-  };
-
-  const handleEditComplete = () => {
-    if (editingProduct) {
-      onProductUpdate(editingProduct);
-      setEditingProduct(null);
-    }
-  };
-
-  const handleStockUpdate = (productId: string, newStock: number) => {
-    const updatedProduct = productList.find((p) => p.id === productId);
-    if (updatedProduct) {
-      const newProduct = { ...updatedProduct, stock: newStock };
-      onProductUpdate(newProduct);
-      setEditingProduct(newProduct);
-    }
-  };
-
   return (
     <div>
       <div className='mb-4'>
@@ -70,11 +73,12 @@ export const ProductEditForm = ({
         <input
           type='number'
           value={editingProduct?.stock}
-          onChange={(e) => handleStockUpdate(product.id, parseInt(e.target.value))}
+          onChange={(e) =>
+            handleStockUpdate(product.id, parseInt(e.target.value), productList, onProductUpdate)
+          }
           className='w-full p-2 border rounded'
         />
       </div>
-      {/* 할인 정보 수정 부분 */}
       <div>
         <h4 className='text-lg font-semibold mb-2'>할인 정보</h4>
         {editingProduct?.discountList.map((discount, index) => (
@@ -86,6 +90,7 @@ export const ProductEditForm = ({
             setEditingProduct={setEditingProduct}
             productList={productList}
             onProductUpdate={onProductUpdate}
+            handleRemoveDiscount={handleRemoveDiscount}
           />
         ))}
         <DiscountForm
@@ -94,10 +99,13 @@ export const ProductEditForm = ({
           productList={productList}
           onProductUpdate={onProductUpdate}
           editingProduct={editingProduct}
+          handleAddDiscount={handleAddDiscount}
+          newDiscount={newDiscount}
+          setNewDiscount={setNewDiscount}
         />
       </div>
       <button
-        onClick={handleEditComplete}
+        onClick={() => handleEditComplete(onProductUpdate, editingProduct)}
         className='bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 mt-2'
       >
         수정 완료

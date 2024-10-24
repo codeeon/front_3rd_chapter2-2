@@ -4,9 +4,9 @@ export const DiscountItem = ({
   discount,
   index,
   productId,
-  setEditingProduct,
   productList,
   onProductUpdate,
+  handleRemoveDiscount,
 }: {
   discount: DiscountType;
   index: number;
@@ -14,24 +14,13 @@ export const DiscountItem = ({
   setEditingProduct: (product: ProductType) => void;
   productList: ProductType[];
   onProductUpdate: (product: ProductType) => void;
-}) => {
-  const handleRemoveDiscount = (
+  handleRemoveDiscount: (
     productId: string,
     index: number,
     productList: ProductType[],
     onProductUpdate: (product: ProductType) => void
-  ) => {
-    const updatedProduct = productList.find((p) => p.id === productId);
-    if (updatedProduct) {
-      const newProduct = {
-        ...updatedProduct,
-        discountList: updatedProduct.discountList.filter((_, i) => i !== index),
-      };
-      onProductUpdate(newProduct);
-      setEditingProduct(newProduct);
-    }
-  };
-
+  ) => void;
+}) => {
   return (
     <div key={index} className='flex justify-between items-center mb-2'>
       <span>

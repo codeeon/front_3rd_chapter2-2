@@ -1,32 +1,19 @@
-import { useState } from 'react';
 import { ProductType } from '../../../types';
 
 export const NewProductForm = ({
   onProductAdd,
-  setShowNewProductForm,
+  handleAddNewProduct,
+  newProduct,
+  setNewProduct,
 }: {
   onProductAdd: (newProduct: ProductType) => void;
-  setShowNewProductForm: (show: boolean) => void;
+  handleAddNewProduct: (
+    newProduct: Omit<ProductType, 'id'>,
+    onProductAdd: (product: ProductType) => void
+  ) => void;
+  newProduct: Omit<ProductType, 'id'>;
+  setNewProduct: (product: Omit<ProductType, 'id'>) => void;
 }) => {
-  const [newProduct, setNewProduct] = useState<Omit<ProductType, 'id'>>({
-    name: '',
-    price: 0,
-    stock: 0,
-    discountList: [],
-  });
-
-  const handleAddNewProduct = () => {
-    const productWithId = { ...newProduct, id: Date.now().toString() };
-    onProductAdd(productWithId);
-    setNewProduct({
-      name: '',
-      price: 0,
-      stock: 0,
-      discountList: [],
-    });
-    setShowNewProductForm(false);
-  };
-
   return (
     <div className='bg-white p-4 rounded shadow mb-4'>
       <h3 className='text-xl font-semibold mb-2'>새 상품 추가</h3>
@@ -67,7 +54,7 @@ export const NewProductForm = ({
         />
       </div>
       <button
-        onClick={handleAddNewProduct}
+        onClick={() => handleAddNewProduct(newProduct, onProductAdd)}
         className='w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600'
       >
         추가

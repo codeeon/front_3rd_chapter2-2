@@ -1,6 +1,4 @@
-import { useState } from 'react';
-import { ProductType } from '../../../types';
-import { useAdmin } from '../../hooks/admin';
+import { DiscountType, ProductType } from '../../../types';
 import { ProductEditForm } from './product-edit-item';
 
 export const AdminProductItem = ({
@@ -8,31 +6,55 @@ export const AdminProductItem = ({
   index,
   onProductUpdate,
   productList,
+  handleEditProduct,
+  toggleProductAccordion,
+  handleProductNameUpdate,
+  handlePriceUpdate,
+  handleStockUpdate,
+  handleEditComplete,
+  handleRemoveDiscount,
+  handleAddDiscount,
+  newDiscount,
+  setNewDiscount,
+  openProductIdList,
+  editingProduct,
+  setEditingProduct,
 }: {
   product: ProductType;
   index: number;
   onProductUpdate: (updatedProduct: ProductType) => void;
   productList: ProductType[];
+  handleEditProduct: (product: ProductType) => void;
+  toggleProductAccordion: (productId: string) => void;
+  handleProductNameUpdate: (productId: string, name: string) => void;
+  handlePriceUpdate: (productId: string, price: number) => void;
+  handleStockUpdate: (
+    productId: string,
+    stock: number,
+    productList: ProductType[],
+    onProductUpdate: (updatedProduct: ProductType) => void
+  ) => void;
+  handleEditComplete: (
+    onProductUpdate: (updatedProduct: ProductType) => void,
+    editingProduct: ProductType | null
+  ) => void;
+  handleRemoveDiscount: (
+    productId: string,
+    index: number,
+    productList: ProductType[],
+    onProductUpdate: (product: ProductType) => void
+  ) => void;
+  handleAddDiscount: (
+    productId: string,
+    productList: ProductType[],
+    onProductUpdate: (product: ProductType) => void
+  ) => void;
+  newDiscount: DiscountType;
+  setNewDiscount: (discount: DiscountType) => void;
+  openProductIdList: Set<string>;
+  editingProduct: ProductType | null;
+  setEditingProduct: (product: ProductType | null) => void;
 }) => {
-  const [openProductIds, setOpenProductIds] = useState<Set<string>>(new Set());
-  const [editingProduct, setEditingProduct] = useState<ProductType | null>(null);
-
-  const handleEditProduct = (product: ProductType) => {
-    setEditingProduct({ ...product });
-  };
-
-  const toggleProductAccordion = (productId: string) => {
-    setOpenProductIds((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(productId)) {
-        newSet.delete(productId);
-      } else {
-        newSet.add(productId);
-      }
-      return newSet;
-    });
-  };
-
   return (
     <div
       key={product.id}
@@ -46,7 +68,7 @@ export const AdminProductItem = ({
       >
         {product.name} - {product.price}원 (재고: {product.stock})
       </button>
-      {openProductIds.has(product.id) && (
+      {openProductIdList.has(product.id) && (
         <div className='mt-2'>
           {editingProduct && editingProduct.id === product.id ? (
             <ProductEditForm
@@ -55,6 +77,14 @@ export const AdminProductItem = ({
               productList={productList}
               editingProduct={editingProduct}
               setEditingProduct={setEditingProduct}
+              handleProductNameUpdate={handleProductNameUpdate}
+              handlePriceUpdate={handlePriceUpdate}
+              handleStockUpdate={handleStockUpdate}
+              handleEditComplete={handleEditComplete}
+              handleRemoveDiscount={handleRemoveDiscount}
+              handleAddDiscount={handleAddDiscount}
+              newDiscount={newDiscount}
+              setNewDiscount={setNewDiscount}
             />
           ) : (
             <div>

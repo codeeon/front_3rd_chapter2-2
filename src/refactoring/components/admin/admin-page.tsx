@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import type { CouponType, ProductType } from '../../../types.ts';
+import { useAdmin } from '../../hooks/admin';
 import { AdminProductItem } from './admin-product-item.tsx';
 import { CouponItem } from './coupon-item.tsx';
 import { NewCouponForm } from './new-coupon-form.tsx';
@@ -20,7 +20,29 @@ export const AdminPage = ({
   onProductAdd,
   onCouponAdd,
 }: AdminPageProps) => {
-  const [showNewProductForm, setShowNewProductForm] = useState(false);
+  const {
+    openProductIdList,
+    editingProduct,
+    newDiscount,
+    newCoupon,
+    showNewProductForm,
+    newProduct,
+    toggleProductAccordion,
+    handleEditProduct,
+    handleProductNameUpdate,
+    handlePriceUpdate,
+    handleEditComplete,
+    handleStockUpdate,
+    handleAddDiscount,
+    handleRemoveDiscount,
+    handleAddCoupon,
+    handleAddNewProduct,
+    handleShowNewProductForm,
+    setNewDiscount,
+    setNewCoupon,
+    setNewProduct,
+    setEditingProduct,
+  } = useAdmin();
 
   return (
     <div className='container mx-auto p-4'>
@@ -29,7 +51,7 @@ export const AdminPage = ({
         <div>
           <h2 className='text-2xl font-semibold mb-4'>상품 관리</h2>
           <button
-            onClick={() => setShowNewProductForm(!showNewProductForm)}
+            onClick={handleShowNewProductForm}
             className='bg-green-500 text-white px-4 py-2 rounded mb-4 hover:bg-green-600'
           >
             {showNewProductForm ? '취소' : '새 상품 추가'}
@@ -37,7 +59,9 @@ export const AdminPage = ({
           {showNewProductForm && (
             <NewProductForm
               onProductAdd={onProductAdd}
-              setShowNewProductForm={setShowNewProductForm}
+              handleAddNewProduct={handleAddNewProduct}
+              newProduct={newProduct}
+              setNewProduct={setNewProduct}
             />
           )}
           <div className='space-y-2'>
@@ -48,6 +72,19 @@ export const AdminPage = ({
                 index={index}
                 onProductUpdate={onProductUpdate}
                 productList={productList}
+                handleEditProduct={handleEditProduct}
+                toggleProductAccordion={toggleProductAccordion}
+                handleProductNameUpdate={handleProductNameUpdate}
+                handlePriceUpdate={handlePriceUpdate}
+                handleStockUpdate={handleStockUpdate}
+                handleEditComplete={handleEditComplete}
+                handleRemoveDiscount={handleRemoveDiscount}
+                handleAddDiscount={handleAddDiscount}
+                newDiscount={newDiscount}
+                setNewDiscount={setNewDiscount}
+                setEditingProduct={setEditingProduct}
+                openProductIdList={openProductIdList}
+                editingProduct={editingProduct}
               />
             ))}
           </div>
@@ -55,7 +92,12 @@ export const AdminPage = ({
         <div>
           <h2 className='text-2xl font-semibold mb-4'>쿠폰 관리</h2>
           <div className='bg-white p-4 rounded shadow'>
-            <NewCouponForm onCouponAdd={onCouponAdd} />
+            <NewCouponForm
+              onCouponAdd={onCouponAdd}
+              newCoupon={newCoupon}
+              setNewCoupon={setNewCoupon}
+              handleAddCoupon={handleAddCoupon}
+            />
             <div>
               <h3 className='text-lg font-semibold mb-2'>현재 쿠폰 목록</h3>
               <div className='space-y-2'>

@@ -1,38 +1,26 @@
-import { useState } from 'react';
-import { ProductType, DiscountType } from '../../../types';
+import { DiscountType, ProductType } from '../../../types';
 
 export const DiscountForm = ({
   productId,
-  setEditingProduct,
   productList,
   onProductUpdate,
-  editingProduct,
+  handleAddDiscount,
+  newDiscount,
+  setNewDiscount,
 }: {
   productId: string;
   setEditingProduct: (product: ProductType) => void;
   productList: ProductType[];
   onProductUpdate: (product: ProductType) => void;
   editingProduct: ProductType | null;
-}) => {
-  const [newDiscount, setNewDiscount] = useState<DiscountType>({ quantity: 0, rate: 0 });
-
-  const handleAddDiscount = (
+  handleAddDiscount: (
     productId: string,
     productList: ProductType[],
     onProductUpdate: (product: ProductType) => void
-  ) => {
-    const updatedProduct = productList.find((p) => p.id === productId);
-    if (updatedProduct && editingProduct) {
-      const newProduct = {
-        ...updatedProduct,
-        discountList: [...updatedProduct.discountList, newDiscount],
-      };
-      onProductUpdate(newProduct);
-      setEditingProduct(newProduct);
-      setNewDiscount({ quantity: 0, rate: 0 });
-    }
-  };
-
+  ) => void;
+  newDiscount: DiscountType;
+  setNewDiscount: (discount: DiscountType) => void;
+}) => {
   return (
     <div className='flex space-x-2'>
       <input

@@ -1,28 +1,16 @@
-import { useState } from 'react';
 import { CouponType } from '../../../types';
 
 export const NewCouponForm = ({
   onCouponAdd,
+  newCoupon,
+  setNewCoupon,
+  handleAddCoupon,
 }: {
   onCouponAdd: (newCoupon: CouponType) => void;
+  newCoupon: CouponType;
+  setNewCoupon: (coupon: CouponType) => void;
+  handleAddCoupon: (onCouponAdd: (coupon: CouponType) => void, newCoupon: CouponType) => void;
 }) => {
-  const [newCoupon, setNewCoupon] = useState<CouponType>({
-    name: '',
-    code: '',
-    discountType: 'percentage',
-    discountValue: 0,
-  });
-
-  const handleAddCoupon = () => {
-    onCouponAdd(newCoupon);
-    setNewCoupon({
-      name: '',
-      code: '',
-      discountType: 'percentage',
-      discountValue: 0,
-    });
-  };
-
   return (
     <div className='space-y-2 mb-4'>
       <input
@@ -62,7 +50,7 @@ export const NewCouponForm = ({
         />
       </div>
       <button
-        onClick={handleAddCoupon}
+        onClick={() => handleAddCoupon(onCouponAdd, newCoupon)}
         className='w-full bg-green-500 text-white p-2 rounded hover:bg-green-600'
       >
         쿠폰 추가
