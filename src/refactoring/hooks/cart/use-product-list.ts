@@ -6,7 +6,7 @@ export const useProductList = (initialProductList: ProductType[]) => {
 
   const updateProduct = (product: ProductType) => {
     setProductList((prevProductList) =>
-      prevProductList.map((p) => (p.id === product.id ? product : p))
+      prevProductList.map((prevState) => (prevState.id === product.id ? product : prevState))
     );
   };
 
@@ -14,5 +14,5 @@ export const useProductList = (initialProductList: ProductType[]) => {
     setProductList([...productList, product]);
   };
 
-  return { productList: productList, updateProduct, addProduct };
+  return { productList, updateProduct, addProduct };
 };
