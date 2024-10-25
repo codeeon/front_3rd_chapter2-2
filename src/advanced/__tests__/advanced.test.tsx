@@ -1,9 +1,19 @@
 import { useState } from 'react';
-import { describe, expect, test } from 'vitest';
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { describe, expect, test, vitest } from 'vitest';
+import { act, fireEvent, render, renderHook, screen, within } from '@testing-library/react';
 import { CartPage } from '../../refactoring/components/cart/cart-page';
 import { AdminPage } from '../../refactoring/components/admin/admin-page';
 import { CouponType, ProductType } from '../../types';
+import {
+  updateState,
+  findProductById,
+  createNewProduct,
+  calculateDiscountRate,
+} from '../../refactoring/utils/admin-utils';
+
+import { useProductEdit } from '../../refactoring/hooks/admin/use-product-edit';
+
+import { useProductAccordion } from '../../refactoring/hooks/admin/use-product-accordion';
 
 const mockProductList: ProductType[] = [
   {
@@ -30,7 +40,7 @@ const mockProductList: ProductType[] = [
 ];
 const mockCouponList: CouponType[] = [
   {
-    name: '5000원 할인 쿠폰',
+    name: '5000원 인 쿠폰',
     code: 'AMOUNT5000',
     discountType: 'amount',
     discountValue: 5000,
@@ -229,12 +239,129 @@ describe('advanced > ', () => {
   });
 
   describe('자유롭게 작성해보세요.', () => {
-    test('새로운 유틸 함수를 만든 후에 테스트 코드를 작성해서 실행해보세요', () => {
-      expect(true).toBe(false);
+    describe('유틸리티 함수 테스트', () => {
+      test('updateState 함수가 올바르게 상태를 업데이트한다', () => {
+        const setState = vitest.fn();
+        updateState(setState, 'name', 'New Name');
+        expect(setState).toHaveBeenCalledWith(expect.any(Function));
+        const updater = setState.mock.calls[0][0];
+        const result = updater({ name: 'Old Name', price: 100 });
+        expect(result).toEqual({ name: 'New Name', price: 100 });
+      });
+
+      test('updateState 함수가 null 상태를 처리한다', () => {
+        const setState = vitest.fn();
+        updateState(setState, 'name', 'New Name');
+        const updater = setState.mock.calls[0][0];
+        const result = updater(null);
+        expect(result).toBeNull();
+      });
+
+      test('findProductById 함수가 올바른 제품을 찾는다', () => {
+        const products: ProductType[] = [
+          { id: '1', name: 'Product 1', price: 100, stock: 10, discountList: [] },
+          { id: '2', name: 'Product 2', price: 200, stock: 20, discountList: [] },
+        ];
+        const result = findProductById('2', products);
+        expect(result).toEqual(products[1]);
+      });
+
+      test('createNewProduct 함수가 새 제품을 올바르게 생성한다', () => {
+        const newProduct = createNewProduct({
+          name: 'New Product',
+          price: 100,
+          stock: 10,
+          discountList: [],
+        });
+        expect(newProduct).toHaveProperty('id');
+        expect(newProduct.name).toBe('New Product');
+        expect(typeof newProduct.id).toBe('string');
+      });
+
+      test('calculateDiscountRate 함수가 할인율을 올바르게 계산한다', () => {
+        expect(calculateDiscountRate(0.1)).toBe(10);
+        expect(calculateDiscountRate(0.25)).toBe(25);
+        expect(calculateDiscountRate(0.5)).toBe(50);
+      });
     });
 
-    test('새로운 hook 함수를 만든 후에 테스트 코드를 작성해서 실행해보세요', () => {
-      expect(true).toBe(false);
+    describe('훅 테스트', () => {
+      test('useProductEdit 훅이 올바르게 작동한다', () => {
+        const { result } = renderHook(() => useProductEdit());
+
+        act(() => {
+          result.current.handleEditProduct({
+            id: '1',
+            name: 'Product',
+            price: 100,
+            stock: 10,
+            discountList: [],
+          });
+        });
+
+        expect(result.current.editingProduct).toEqual({
+          id: '1',
+          name: 'Product',
+          price: 100,
+          stock: 10,
+          discountList: [],
+        });
+
+        act(() => {
+          result.current.handleProductNameUpdate('1', 'New Product');
+        });
+
+        expect(result.current.editingProduct?.name).toBe('New Product');
+
+        act(() => {
+          result.current.handlePriceUpdate('1', 200);
+        });
+
+        expect(result.current.editingProduct?.price).toBe(200);
+
+        const onProductUpdate = vitest.fn();
+        let editingProductBeforeComplete;
+        act(() => {
+          editingProductBeforeComplete = result.current.editingProduct;
+          result.current.handleEditComplete(onProductUpdate);
+        });
+
+        expect(onProductUpdate).toHaveBeenCalledWith(editingProductBeforeComplete);
+        expect(result.current.editingProduct).toBeNull();
+      });
+
+      test('useProductAccordion 훅이 올바르게 작동한다', () => {
+        const { result } = renderHook(() => useProductAccordion());
+
+        expect(result.current.openProductIdList.size).toBe(0);
+
+        act(() => {
+          result.current.toggleProductAccordion('1');
+        });
+
+        expect(result.current.openProductIdList.has('1')).toBe(true);
+
+        act(() => {
+          result.current.toggleProductAccordion('1');
+        });
+
+        expect(result.current.openProductIdList.has('1')).toBe(false);
+      });
+
+      test('useProductEdit의 handleStockUpdate가 올바르게 작동한다', () => {
+        const { result } = renderHook(() => useProductEdit());
+        const mockProductList = [
+          { id: '1', name: 'Product', price: 100, stock: 10, discountList: [] },
+        ];
+        const onProductUpdate = vitest.fn();
+
+        act(() => {
+          result.current.handleStockUpdate('1', 15, mockProductList, onProductUpdate);
+        });
+
+        expect(onProductUpdate).toHaveBeenCalledWith(expect.objectContaining({ stock: 15 }));
+        expect(result.current.editingProduct?.stock).toBe(15);
+      });
     });
   });
 });
