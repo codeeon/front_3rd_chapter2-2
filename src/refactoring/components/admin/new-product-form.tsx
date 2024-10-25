@@ -1,19 +1,15 @@
 import { ProductType } from '../../../types';
 
-export const NewProductForm = ({
-  onProductAdd,
-  handleAddNewProduct,
-  newProduct,
-  setNewProduct,
-}: {
+interface NewProductFormPropsType {
   onProductAdd: (newProduct: ProductType) => void;
-  handleAddNewProduct: (
-    newProduct: Omit<ProductType, 'id'>,
-    onProductAdd: (product: ProductType) => void
-  ) => void;
   newProduct: Omit<ProductType, 'id'>;
   setNewProduct: (product: Omit<ProductType, 'id'>) => void;
-}) => {
+  handleAddNewProduct: (onProductAdd: (newProduct: ProductType) => void) => void;
+}
+
+export const NewProductForm = (props: NewProductFormPropsType) => {
+  const { onProductAdd, newProduct, setNewProduct, handleAddNewProduct } = props;
+
   return (
     <div className='bg-white p-4 rounded shadow mb-4'>
       <h3 className='text-xl font-semibold mb-2'>새 상품 추가</h3>
@@ -54,7 +50,7 @@ export const NewProductForm = ({
         />
       </div>
       <button
-        onClick={() => handleAddNewProduct(newProduct, onProductAdd)}
+        onClick={() => handleAddNewProduct(onProductAdd)}
         className='w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600'
       >
         추가

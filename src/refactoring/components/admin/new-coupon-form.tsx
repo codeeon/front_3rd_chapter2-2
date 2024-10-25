@@ -1,16 +1,15 @@
 import { CouponType } from '../../../types';
 
-export const NewCouponForm = ({
-  onCouponAdd,
-  newCoupon,
-  setNewCoupon,
-  handleAddCoupon,
-}: {
+interface NewCouponFormPropsType {
   onCouponAdd: (newCoupon: CouponType) => void;
   newCoupon: CouponType;
   setNewCoupon: (coupon: CouponType) => void;
   handleAddCoupon: (onCouponAdd: (coupon: CouponType) => void, newCoupon: CouponType) => void;
-}) => {
+}
+
+export const NewCouponForm = (props: NewCouponFormPropsType) => {
+  const { onCouponAdd, newCoupon, setNewCoupon, handleAddCoupon } = props;
+
   return (
     <div className='space-y-2 mb-4'>
       <input

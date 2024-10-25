@@ -2,52 +2,56 @@ import { DiscountType, ProductType } from '../../../types';
 import { DiscountForm } from './discount-form';
 import { DiscountItem } from './discount-item';
 
-export const ProductEditForm = ({
-  product,
-  onProductUpdate,
-  productList,
-  editingProduct,
-  setEditingProduct,
-  handleProductNameUpdate,
-  handlePriceUpdate,
-  handleStockUpdate,
-  handleEditComplete,
-  handleAddDiscount,
-  handleRemoveDiscount,
-  newDiscount,
-  setNewDiscount,
-}: {
+interface ProductEditFormPropsType {
   product: ProductType;
   onProductUpdate: (updatedProduct: ProductType) => void;
   productList: ProductType[];
   editingProduct: ProductType | null;
   setEditingProduct: (product: ProductType | null) => void;
-  handleProductNameUpdate: (productId: string, name: string) => void;
-  handlePriceUpdate: (productId: string, price: number) => void;
+  handleProductNameUpdate: (productId: string, newName: string) => void;
+  handlePriceUpdate: (productId: string, newPrice: number) => void;
   handleStockUpdate: (
     productId: string,
-    stock: number,
+    newStock: number,
     productList: ProductType[],
-    onProductUpdate: (updatedProduct: ProductType) => void
+    onProductUpdate: (product: ProductType) => void
   ) => void;
-  handleEditComplete: (
-    onProductUpdate: (updatedProduct: ProductType) => void,
-    editingProduct: ProductType | null
-  ) => void;
+  handleEditComplete: (onProductUpdate: (product: ProductType) => void) => void;
   handleRemoveDiscount: (
     productId: string,
     index: number,
     productList: ProductType[],
-    onProductUpdate: (product: ProductType) => void
+    onProductUpdate: (product: ProductType) => void,
+    setEditingProduct: (product: ProductType | null) => void
   ) => void;
   handleAddDiscount: (
     productId: string,
     productList: ProductType[],
-    onProductUpdate: (product: ProductType) => void
+    onProductUpdate: (product: ProductType) => void,
+    editingProduct: ProductType | null,
+    setEditingProduct: (product: ProductType | null) => void
   ) => void;
   newDiscount: DiscountType;
   setNewDiscount: (discount: DiscountType) => void;
-}) => {
+}
+
+export const ProductEditForm = (props: ProductEditFormPropsType) => {
+  const {
+    product,
+    onProductUpdate,
+    productList,
+    editingProduct,
+    setEditingProduct,
+    handleProductNameUpdate,
+    handlePriceUpdate,
+    handleStockUpdate,
+    handleEditComplete,
+    handleAddDiscount,
+    handleRemoveDiscount,
+    newDiscount,
+    setNewDiscount,
+  } = props;
+
   return (
     <div>
       <div className='mb-4'>
@@ -105,7 +109,7 @@ export const ProductEditForm = ({
         />
       </div>
       <button
-        onClick={() => handleEditComplete(onProductUpdate, editingProduct)}
+        onClick={() => handleEditComplete(onProductUpdate)}
         className='bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 mt-2'
       >
         수정 완료

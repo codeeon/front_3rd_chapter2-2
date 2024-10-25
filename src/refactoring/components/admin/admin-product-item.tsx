@@ -1,60 +1,63 @@
 import { DiscountType, ProductType } from '../../../types';
 import { ProductEditForm } from './product-edit-item';
 
-export const AdminProductItem = ({
-  product,
-  index,
-  onProductUpdate,
-  productList,
-  handleEditProduct,
-  toggleProductAccordion,
-  handleProductNameUpdate,
-  handlePriceUpdate,
-  handleStockUpdate,
-  handleEditComplete,
-  handleRemoveDiscount,
-  handleAddDiscount,
-  newDiscount,
-  setNewDiscount,
-  openProductIdList,
-  editingProduct,
-  setEditingProduct,
-}: {
+interface AdminProductItemPropsType {
   product: ProductType;
   index: number;
-  onProductUpdate: (updatedProduct: ProductType) => void;
   productList: ProductType[];
+  onProductUpdate: (updatedProduct: ProductType) => void;
+  editingProduct: ProductType | null;
+  setEditingProduct: (product: ProductType | null) => void;
   handleEditProduct: (product: ProductType) => void;
-  toggleProductAccordion: (productId: string) => void;
-  handleProductNameUpdate: (productId: string, name: string) => void;
-  handlePriceUpdate: (productId: string, price: number) => void;
+  handleProductNameUpdate: (productId: string, newName: string) => void;
+  handlePriceUpdate: (productId: string, newPrice: number) => void;
+  handleEditComplete: (onProductUpdate: (product: ProductType) => void) => void;
   handleStockUpdate: (
     productId: string,
-    stock: number,
-    productList: ProductType[],
-    onProductUpdate: (updatedProduct: ProductType) => void
-  ) => void;
-  handleEditComplete: (
-    onProductUpdate: (updatedProduct: ProductType) => void,
-    editingProduct: ProductType | null
-  ) => void;
-  handleRemoveDiscount: (
-    productId: string,
-    index: number,
-    productList: ProductType[],
-    onProductUpdate: (product: ProductType) => void
-  ) => void;
-  handleAddDiscount: (
-    productId: string,
+    newStock: number,
     productList: ProductType[],
     onProductUpdate: (product: ProductType) => void
   ) => void;
   newDiscount: DiscountType;
   setNewDiscount: (discount: DiscountType) => void;
+  handleAddDiscount: (
+    productId: string,
+    productList: ProductType[],
+    onProductUpdate: (product: ProductType) => void,
+    editingProduct: ProductType | null,
+    setEditingProduct: (product: ProductType | null) => void
+  ) => void;
+  handleRemoveDiscount: (
+    productId: string,
+    index: number,
+    productList: ProductType[],
+    onProductUpdate: (product: ProductType) => void,
+    setEditingProduct: (product: ProductType | null) => void
+  ) => void;
   openProductIdList: Set<string>;
-  editingProduct: ProductType | null;
-  setEditingProduct: (product: ProductType | null) => void;
-}) => {
+  toggleProductAccordion: (productId: string) => void;
+}
+
+export const AdminProductItem = (props: AdminProductItemPropsType) => {
+  const {
+    product,
+    index,
+    productList,
+    onProductUpdate,
+    editingProduct,
+    setEditingProduct,
+    handleEditProduct,
+    handleProductNameUpdate,
+    handlePriceUpdate,
+    handleEditComplete,
+    handleStockUpdate,
+    newDiscount,
+    setNewDiscount,
+    handleAddDiscount,
+    handleRemoveDiscount,
+    openProductIdList,
+    toggleProductAccordion,
+  } = props;
   return (
     <div
       key={product.id}

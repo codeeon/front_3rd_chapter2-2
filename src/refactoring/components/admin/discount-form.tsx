@@ -1,26 +1,34 @@
 import { DiscountType, ProductType } from '../../../types';
 
-export const DiscountForm = ({
-  productId,
-  productList,
-  onProductUpdate,
-  handleAddDiscount,
-  newDiscount,
-  setNewDiscount,
-}: {
+interface DiscountFormPropsType {
   productId: string;
-  setEditingProduct: (product: ProductType) => void;
   productList: ProductType[];
   onProductUpdate: (product: ProductType) => void;
-  editingProduct: ProductType | null;
   handleAddDiscount: (
     productId: string,
     productList: ProductType[],
-    onProductUpdate: (product: ProductType) => void
+    onProductUpdate: (product: ProductType) => void,
+    editingProduct: ProductType | null,
+    setEditingProduct: (product: ProductType | null) => void
   ) => void;
   newDiscount: DiscountType;
   setNewDiscount: (discount: DiscountType) => void;
-}) => {
+  editingProduct: ProductType | null;
+  setEditingProduct: (product: ProductType | null) => void;
+}
+
+export const DiscountForm = (props: DiscountFormPropsType) => {
+  const {
+    productId,
+    productList,
+    onProductUpdate,
+    handleAddDiscount,
+    newDiscount,
+    setNewDiscount,
+    editingProduct,
+    setEditingProduct,
+  } = props;
+
   return (
     <div className='flex space-x-2'>
       <input
@@ -48,7 +56,7 @@ export const DiscountForm = ({
         className='w-1/3 p-2 border rounded'
       />
       <button
-        onClick={() => handleAddDiscount(productId, productList, onProductUpdate)}
+        onClick={() => handleAddDiscount(productId, productList, onProductUpdate, editingProduct, setEditingProduct)}
         className='w-1/3 bg-blue-500 text-white p-2 rounded hover:bg-blue-600'
       >
         할인 추가
