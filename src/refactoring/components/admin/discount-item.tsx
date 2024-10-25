@@ -1,4 +1,5 @@
 import { DiscountType, ProductType } from '../../../types';
+import { calculateDiscountRate } from '../../utils/admin-utils';
 
 interface DiscountItemPropsType {
   discount: DiscountType;
@@ -30,10 +31,12 @@ export const DiscountItem = (props: DiscountItemPropsType) => {
   return (
     <div key={index} className='flex justify-between items-center mb-2'>
       <span>
-        {discount.quantity}개 이상 구매 시 {discount.rate * 100}% 할인
+        {discount.quantity}개 이상 구매 시 {calculateDiscountRate(discount.rate)}% 할인
       </span>
       <button
-        onClick={() => handleRemoveDiscount(productId, index, productList, onProductUpdate, setEditingProduct)}
+        onClick={() =>
+          handleRemoveDiscount(productId, index, productList, onProductUpdate, setEditingProduct)
+        }
         className='bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600'
       >
         삭제

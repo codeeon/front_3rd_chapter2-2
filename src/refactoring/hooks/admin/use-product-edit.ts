@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ProductType } from '../../../types';
-import { findProductById } from '../../utils/admin-utils';
+import { findProductById, updateState } from '../../utils/admin-utils';
 
 export const useProductEdit = () => {
   const [editingProduct, setEditingProduct] = useState<ProductType | null>(null);
@@ -11,13 +11,13 @@ export const useProductEdit = () => {
 
   const handleProductNameUpdate = (productId: string, newName: string) => {
     if (editingProduct && editingProduct.id === productId) {
-      setEditingProduct({ ...editingProduct, name: newName });
+      updateState(setEditingProduct, 'name', newName);
     }
   };
 
   const handlePriceUpdate = (productId: string, newPrice: number) => {
     if (editingProduct && editingProduct.id === productId) {
-      setEditingProduct({ ...editingProduct, price: newPrice });
+      updateState(setEditingProduct, 'price', newPrice);
     }
   };
 
